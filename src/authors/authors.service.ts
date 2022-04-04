@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
 import { Author, AuthorDocument } from './schemas/author.schema';
-import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 @Injectable()
 export class AuthorsService {
@@ -16,8 +15,8 @@ export class AuthorsService {
     return await this.authorModel.create(createAuthorDto);
   }
 
-  async findAll({ limit, offset }: PaginationQueryDto): Promise<Author[]> {
-    return await this.authorModel.find().skip(offset).limit(limit);
+  async findAll(): Promise<Author[]> {
+    return await this.authorModel.find();
   }
 
   async findOne(id: string): Promise<Author> {

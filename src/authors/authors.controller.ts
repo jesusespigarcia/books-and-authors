@@ -12,7 +12,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
-import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
 import { Author } from './schemas/author.schema';
 
@@ -27,10 +26,8 @@ export class AuthorsController {
   }
 
   @Get()
-  async findAll(
-    @Query() paginationQuery: PaginationQueryDto,
-  ): Promise<Author[]> {
-    return await this.authorsService.findAll(paginationQuery);
+  async findAll(): Promise<Author[]> {
+    return await this.authorsService.findAll();
   }
 
   @Get(':id')
