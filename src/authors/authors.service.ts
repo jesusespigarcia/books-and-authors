@@ -11,25 +11,28 @@ export class AuthorsService {
     @InjectModel(Author.name) private authorModel: Model<AuthorDocument>,
   ) {}
 
-  async create(createAuthorDto: CreateAuthorDto): Promise<Author> {
+  async create(createAuthorDto: CreateAuthorDto): Promise<AuthorDocument> {
     return await this.authorModel.create(createAuthorDto);
   }
 
-  async findAll(): Promise<Author[]> {
+  async findAll(): Promise<AuthorDocument[]> {
     return await this.authorModel.find();
   }
 
-  async findOne(id: string): Promise<Author> {
+  async findOne(id: string): Promise<AuthorDocument> {
     return await this.authorModel.findById(id);
   }
 
-  async update(id: string, updateAuthorDto: UpdateAuthorDto): Promise<Author> {
+  async update(
+    id: string,
+    updateAuthorDto: UpdateAuthorDto,
+  ): Promise<AuthorDocument> {
     return await this.authorModel.findByIdAndUpdate(id, updateAuthorDto, {
       new: true,
     });
   }
 
-  async remove(id: string): Promise<Author> {
+  async remove(id: string): Promise<AuthorDocument> {
     return await this.authorModel.findByIdAndRemove(id);
   }
 }
