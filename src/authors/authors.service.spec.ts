@@ -82,6 +82,12 @@ describe('AuthorsService', () => {
     expect(foundAuthor).toEqual(authorDocument);
   });
 
+  it('shoud throw if one author by id dont exists', async () => {
+    const id = '6249b5161fcde00ca89fe1cd';
+    jest.spyOn(model, 'findById').mockResolvedValueOnce(null);
+    await expect(service.findOne(id)).rejects.toThrow('Not Found');
+  });
+
   it('should return all authors', async () => {
     const findSpy = jest
       .spyOn(model, 'find')
@@ -106,6 +112,12 @@ describe('AuthorsService', () => {
     expect(updatedAuthor).toEqual({ ...authorDocument, ...updateAuthorDto });
   });
 
+  it('shoud throw if the author to update by id dont exists', async () => {
+    const id = '6249b5161fcde00ca89fe1cd';
+    jest.spyOn(model, 'findByIdAndUpdate').mockResolvedValueOnce(null);
+    await expect(service.update(id, mockAuthor())).rejects.toThrow('Not Found');
+  });
+
   it('shoud delete author by id and return author', async () => {
     const id = '6249b5161fcde00ca89fe1cd';
     const authorDocument = mockAuthorDocument(id, mockAuthor());
@@ -116,5 +128,21 @@ describe('AuthorsService', () => {
     expect(findByIdAndRemoveSpy).toHaveBeenCalledTimes(1);
     expect(findByIdAndRemoveSpy.mock.calls[0][0]).toBe(id);
     expect(deletedAuthor).toEqual(authorDocument);
+  });
+
+  it('shoud throw if the author to delete by id dont exists', async () => {
+    const id = '6249b5161fcde00ca89fe1cd';
+    jest.spyOn(model, 'findByIdAndRemove').mockResolvedValueOnce(null);
+    await expect(service.remove(id)).rejects.toThrow('Not Found');
+  });
+
+  it('should return all authors', async () => {
+    const findSpy = jest
+      .spyOn(model, 'find')
+      .mockResolvedValueOnce(mockAuthorDocumentArray);
+    const authorsFound = await service.findAll();
+    expect(findSpy).toHaveBeenCalledTimes(1);
+    expect(findSpy.mock.calls[0]).toEqual([]);
+    expect(authorsFound).toEqual(mockAuthorDocumentArray);
   });
 });

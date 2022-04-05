@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
@@ -11,28 +11,35 @@ export class AuthorsService {
     @InjectModel(Author.name) private authorModel: Model<AuthorDocument>,
   ) {}
 
-  async create(createAuthorDto: CreateAuthorDto): Promise<AuthorDocument> {
+  async create(createAuthorDto: CreateAuthorDto): Promise<Author> {
     return await this.authorModel.create(createAuthorDto);
   }
 
-  async findAll(): Promise<AuthorDocument[]> {
+  async findAll(): Promise<Author[]> {
     return await this.authorModel.find();
   }
 
-  async findOne(id: string): Promise<AuthorDocument> {
-    return await this.authorModel.findById(id);
+  async findOne(id: string): Promise<Author> {
+    const author = await this.authorModel.findById(id);
+    if (author) return author;
+    throw new NotFoundException();
   }
 
-  async update(
-    id: string,
-    updateAuthorDto: UpdateAuthorDto,
-  ): Promise<AuthorDocument> {
-    return await this.authorModel.findByIdAndUpdate(id, updateAuthorDto, {
-      new: true,
-    });
+  async update(id: string, updateAuthorDto: UpdateAuthorDto): Promise<Author> {
+    const author = await this.authorModel.findByIdAndUpdate(
+      id,
+      updateAuthorDto,
+      {
+        new: true,
+      },
+    );
+    if (author) return author;
+    throw new NotFoundException();
   }
 
-  async remove(id: string): Promise<AuthorDocument> {
-    return await this.authorModel.findByIdAndRemove(id);
+  async remove(id: string): Promise<Author> {
+    const author = await this.authorModel.findByIdAndRemove(id);
+    if (author) return author;
+    throw new NotFoundException();
   }
 }
