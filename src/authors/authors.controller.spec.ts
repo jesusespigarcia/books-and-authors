@@ -1,30 +1,15 @@
+import {
+  authors,
+  authorsDocuments,
+  authorsDocumentsArray,
+} from '../../test/data/authors.data';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthorsController } from './authors.controller';
 import { AuthorsService } from './authors.service';
-import { Author, AuthorDocument } from './schemas/author.schema';
+import { Author } from './schemas/author.schema';
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { UpdateAuthorDto } from './dto/update-author.dto';
-
-const mockAuthor = (name = 'Author 1', age = 41): Author => ({
-  name,
-  age,
-});
-
-const mockAuthorDocument = (
-  id?: string,
-  mock?: Partial<Author>,
-): Partial<AuthorDocument> => ({
-  _id: id || '6249b5161fcde00ca89fe1cd',
-  name: mock?.name || 'Author 1',
-  age: mock?.age || 41,
-});
-
-const mockAuthorDocumentArray = [
-  mockAuthorDocument(),
-  mockAuthorDocument('6249b5161fcde00ca89fe1ce', { name: 'Author 2', age: 40 }),
-  mockAuthorDocument('6249b5161fcde00ca89fe1cf', { name: 'Author 3', age: 39 }),
-];
 
 describe('AuthorsController', () => {
   let controller: AuthorsController;
@@ -54,63 +39,76 @@ describe('AuthorsController', () => {
   });
 
   it('should create new author', async () => {
-    const id = '6249b5161fcde00ca89fe1cd';
-    const author = mockAuthor();
-    const authorDocument = mockAuthorDocument(id, author);
+    expect.assertions(3);
     const createSpy = jest
       .spyOn(service, 'create')
-      .mockResolvedValueOnce(authorDocument as any);
-    const authorCreated = await controller.create(author);
+      .mockResolvedValueOnce(authorsDocuments.author1Document);
+    const authorCreated = await controller.create(authors.author1);
     expect(createSpy).toHaveBeenCalledTimes(1);
-    expect(createSpy.mock.calls[0][0]).toEqual(author);
-    expect(authorCreated).toEqual(authorDocument);
+    expect(createSpy.mock.calls[0][0]).toEqual(authors.author1);
+    expect(authorCreated).toEqual(authorsDocuments.author1Document);
   });
 
   it('shoud return one author by id', async () => {
-    const id = '6249b5161fcde00ca89fe1cd';
-    const authorDocument = mockAuthorDocument(id, mockAuthor());
+    expect.assertions(3);
     const findOneSpy = jest
       .spyOn(service, 'findOne')
-      .mockResolvedValueOnce(authorDocument as any);
-    const foundAuthor = await controller.findOne(id);
+      .mockResolvedValueOnce(authorsDocuments.author1Document);
+    const authorFound = await controller.findOne(
+      authorsDocuments.author1Document._id,
+    );
     expect(findOneSpy).toHaveBeenCalledTimes(1);
-    expect(findOneSpy.mock.calls[0][0]).toBe(id);
-    expect(foundAuthor).toEqual(authorDocument);
+    expect(findOneSpy.mock.calls[0][0]).toBe(
+      authorsDocuments.author1Document._id,
+    );
+    expect(authorFound).toEqual(authorsDocuments.author1Document);
   });
 
   it('should return all authors', async () => {
+    expect.assertions(3);
     const findAllSpy = jest
       .spyOn(service, 'findAll')
-      .mockResolvedValueOnce(mockAuthorDocumentArray as any);
+      .mockResolvedValueOnce(authorsDocumentsArray);
     const authorsFound = await controller.findAll();
     expect(findAllSpy).toHaveBeenCalledTimes(1);
     expect(findAllSpy.mock.calls[0]).toEqual([]);
-    expect(authorsFound).toEqual(mockAuthorDocumentArray);
+    expect(authorsFound).toEqual(authorsDocumentsArray);
   });
 
   it('shoud update author by id and return updated author', async () => {
-    const id = '6249b5161fcde00ca89fe1cd';
-    const authorDocument = mockAuthorDocument(id, mockAuthor());
+    expect.assertions(4);
     const updateAuthorDto = new UpdateAuthorDto({ age: 25 });
-    const updateSpy = jest
-      .spyOn(service, 'update')
-      .mockResolvedValueOnce({ ...authorDocument, ...updateAuthorDto } as any);
-    const updatedAuthor = await controller.update(id, updateAuthorDto);
+    const updateSpy = jest.spyOn(service, 'update').mockResolvedValueOnce({
+      ...authorsDocuments.author1Document,
+      ...updateAuthorDto,
+    });
+    const authorUpdated = await controller.update(
+      authorsDocuments.author1Document._id,
+      updateAuthorDto,
+    );
     expect(updateSpy).toHaveBeenCalledTimes(1);
-    expect(updateSpy.mock.calls[0][0]).toBe(id);
+    expect(updateSpy.mock.calls[0][0]).toBe(
+      authorsDocuments.author1Document._id,
+    );
     expect(updateSpy.mock.calls[0][1]).toEqual(updateAuthorDto);
-    expect(updatedAuthor).toEqual({ ...authorDocument, ...updateAuthorDto });
+    expect(authorUpdated).toEqual({
+      ...authorsDocuments.author1Document,
+      ...updateAuthorDto,
+    });
   });
 
   it('shoud delete author by id and return author', async () => {
-    const id = '6249b5161fcde00ca89fe1cd';
-    const authorDocument = mockAuthorDocument(id, mockAuthor());
+    expect.assertions(3);
     const removeSpy = jest
       .spyOn(service, 'remove')
-      .mockResolvedValueOnce(authorDocument as any);
-    const deletedAuthor = await controller.remove(id);
+      .mockResolvedValueOnce(authorsDocuments.author1Document);
+    const authorDeleted = await controller.remove(
+      authorsDocuments.author1Document._id,
+    );
     expect(removeSpy).toHaveBeenCalledTimes(1);
-    expect(removeSpy.mock.calls[0][0]).toBe(id);
-    expect(deletedAuthor).toEqual(authorDocument);
+    expect(removeSpy.mock.calls[0][0]).toBe(
+      authorsDocuments.author1Document._id,
+    );
+    expect(authorDeleted).toEqual(authorsDocuments.author1Document);
   });
 });

@@ -1,26 +1,39 @@
-import { Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { Book, BookDocument } from './schemas/book.schema';
 
 @Injectable()
 export class BooksService {
-  create(createBookDto: CreateBookDto) {
-    return 'This action adds a new book';
+  constructor(@InjectModel(Book.name) private bookModel: Model<BookDocument>) {}
+
+  async create(createBookDto: CreateBookDto): Promise<Book> {
+    return await await this.bookModel.create(createBookDto);
   }
 
-  findAll() {
-    return `This action returns all books`;
+  async findAll(): Promise<Book[]> {
+    return await this.bookModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  async findOne(id: string): Promise<Book> {
+    const book = await this.bookModel.findById(id);
+    if (book) return book;
+    throw new NotFoundException();
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  async update(id: string, updateBookDto: UpdateBookDto): Promise<Book> {
+    const book = await this.bookModel.findByIdAndUpdate(id, updateBookDto, {
+      new: true,
+    });
+    if (book) return book;
+    throw new NotFoundException();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  async remove(id: string): Promise<Book> {
+    const book = await this.bookModel.findByIdAndRemove(id);
+    if (book) return book;
+    throw new NotFoundException();
   }
 }
