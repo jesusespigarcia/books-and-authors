@@ -10,7 +10,7 @@ export class BooksService {
   constructor(@InjectModel(Book.name) private bookModel: Model<BookDocument>) {}
 
   async create(createBookDto: CreateBookDto): Promise<Book> {
-    return await await this.bookModel.create(createBookDto);
+    return await this.bookModel.create(createBookDto);
   }
 
   async findAll(): Promise<Book[]> {
