@@ -9,18 +9,22 @@ import {
   Delete,
   StreamableFile,
   Response,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from './schemas/book.schema';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('books')
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createBookDto: CreateBookDto): Promise<Book> {
     return await this.booksService.create(createBookDto);
@@ -38,6 +42,8 @@ export class BooksController {
     return await this.booksService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id', new ValidationObjectIdPipe()) id: string,
@@ -46,6 +52,8 @@ export class BooksController {
     return await this.booksService.update(id, updateBookDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(
     @Param('id', new ValidationObjectIdPipe()) id: string,
