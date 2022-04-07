@@ -25,6 +25,7 @@ export class AuthorsService {
     const csvTransformer = new Transform();
     return this.authorModel
       .find()
+      .lean()
       .cursor()
       .map((author) => JSON.stringify(author))
       .pipe(csvTransformer);

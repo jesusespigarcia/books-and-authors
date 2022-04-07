@@ -23,6 +23,7 @@ export class BooksService {
     const csvTransformer = new Transform();
     return this.bookModel
       .find()
+      .lean()
       .cursor()
       .map((book) => JSON.stringify(book))
       .pipe(csvTransformer);
