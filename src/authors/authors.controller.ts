@@ -7,6 +7,8 @@ import {
   Patch,
   Param,
   Delete,
+  StreamableFile,
+  Response,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthorsService } from './authors.service';
@@ -49,5 +51,14 @@ export class AuthorsController {
     @Param('id', new ValidationObjectIdPipe()) id: string,
   ): Promise<Author> {
     return await this.authorsService.remove(id);
+  }
+
+  @Get('files/csv')
+  getCsv(@Response({ passthrough: true }) res): StreamableFile {
+    res.set({
+      'Content-Type': 'application/CSV',
+      'Content-Disposition': 'attachment; filename="authors.csv"',
+    });
+    return new StreamableFile(this.authorsService.findAllStream());
   }
 }

@@ -4,6 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Book, BookDocument } from './schemas/book.schema';
+import JSON2CSVTransform from 'json2csv/JSON2CSVTransform';
+import { Transform } from 'json2csv';
 
 @Injectable()
 export class BooksService {
@@ -15,6 +17,15 @@ export class BooksService {
 
   async findAll(): Promise<Book[]> {
     return await this.bookModel.find();
+  }
+
+  findAllStream(): JSON2CSVTransform<string> {
+    const csvTransformer = new Transform();
+    return this.bookModel
+      .find()
+      .cursor()
+      .map((book) => JSON.stringify(book))
+      .pipe(csvTransformer);
   }
 
   async findOne(id: string): Promise<Book> {

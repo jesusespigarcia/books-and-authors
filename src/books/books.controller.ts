@@ -7,6 +7,8 @@ import {
   Patch,
   Param,
   Delete,
+  StreamableFile,
+  Response,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BooksService } from './books.service';
@@ -49,5 +51,14 @@ export class BooksController {
     @Param('id', new ValidationObjectIdPipe()) id: string,
   ): Promise<Book> {
     return await this.booksService.remove(id);
+  }
+
+  @Get('files/csv')
+  getCsv(@Response({ passthrough: true }) res): StreamableFile {
+    res.set({
+      'Content-Type': 'application/CSV',
+      'Content-Disposition': 'attachment; filename="books.csv"',
+    });
+    return new StreamableFile(this.booksService.findAllStream());
   }
 }
