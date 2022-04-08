@@ -1,7 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -9,7 +8,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
+  validateUser(username: string, password: string): any {
     const loginUser = this.configService.get<string>('login.user');
     const loginPassword = this.configService.get<string>('login.password');
     if (username === loginUser && password === loginPassword) {
@@ -20,8 +19,8 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, id: user.id };
+  login(user: any) {
+    const payload = { username: user.username };
     return {
       access_token: this.jwtService.sign(payload),
     };

@@ -7,7 +7,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { validate } from './config/config.validation';
-import { DbService } from './db-service/db.service';
+import { DbService } from './db/db.service';
 
 @Module({
   imports: [

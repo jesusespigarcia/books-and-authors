@@ -75,9 +75,9 @@ describe('BooksController', () => {
 
   it('shoud update book by id and return updated book', async () => {
     expect.assertions(4);
-    const updateBookDto = new UpdateBookDto({
+    const updateBookDto = {
       description: 'Book 1 new description',
-    });
+    };
     const updateSpy = jest.spyOn(service, 'update').mockResolvedValueOnce({
       ...booksDocuments.book1Document,
       ...updateBookDto,

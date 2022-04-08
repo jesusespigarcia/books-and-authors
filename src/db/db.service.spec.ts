@@ -1,4 +1,7 @@
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { validate } from '../config/config.validation';
+import configuration from '../config/configuration';
 import { DbService } from './db.service';
 
 describe('DbService', () => {
@@ -6,6 +9,13 @@ describe('DbService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+          load: [configuration],
+          validate,
+        }),
+      ],
       providers: [DbService],
     }).compile();
 
