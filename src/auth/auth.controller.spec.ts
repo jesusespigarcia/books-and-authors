@@ -1,9 +1,8 @@
-import { UsersModule } from './../users/users.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -11,10 +10,15 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        UsersModule,
-        JwtModule.register({
-          secret: jwtConstants.secret,
-          signOptions: { expiresIn: '60s' },
+        JwtModule.registerAsync({
+          imports: [ConfigModule],
+          useFactory: (configService: ConfigService) => ({
+            secret: configService.get<string>('jwt.secret'),
+            signOptions: {
+              expiresIn: configService.get<string>('jwt.expiration'),
+            },
+          }),
+          inject: [ConfigService],
         }),
       ],
       providers: [AuthService],

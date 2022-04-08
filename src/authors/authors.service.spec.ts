@@ -9,7 +9,7 @@ import { Model, AnyKeys, AnyObject, HydratedDocument } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { UpdateAuthorDto } from './dto/update-author.dto';
-import { NotFoundException } from '@nestjs/common';
+import { AuthorNotFoundException } from './exceptions/authorNotFoundException';
 
 describe('AuthorsService', () => {
   let service: AuthorsService;
@@ -74,7 +74,7 @@ describe('AuthorsService', () => {
     jest.spyOn(model, 'findById').mockResolvedValueOnce(null);
     await expect(
       service.findOne(authorsDocuments.author1Document._id),
-    ).rejects.toThrow(NotFoundException);
+    ).rejects.toThrow(AuthorNotFoundException);
   });
 
   it('should return all authors', async () => {
@@ -117,7 +117,7 @@ describe('AuthorsService', () => {
     jest.spyOn(model, 'findByIdAndUpdate').mockResolvedValueOnce(null);
     await expect(
       service.update(authorsDocuments.author1Document._id, authors.author1),
-    ).rejects.toThrow(NotFoundException);
+    ).rejects.toThrow(AuthorNotFoundException);
   });
 
   it('shoud delete author by id and return author', async () => {
@@ -140,6 +140,6 @@ describe('AuthorsService', () => {
     jest.spyOn(model, 'findByIdAndRemove').mockResolvedValueOnce(null);
     await expect(
       service.remove(authorsDocuments.author1Document._id),
-    ).rejects.toThrow(NotFoundException);
+    ).rejects.toThrow(AuthorNotFoundException);
   });
 });

@@ -1,6 +1,7 @@
+import { AuthorNotFoundException } from './exceptions/authorNotFoundException';
 import { Transform } from 'json2csv';
 import { Model } from 'mongoose';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
@@ -34,7 +35,7 @@ export class AuthorsService {
   async findOne(id: string): Promise<Author> {
     const author = await this.authorModel.findById(id);
     if (author) return author;
-    throw new NotFoundException();
+    throw new AuthorNotFoundException();
   }
 
   async update(id: string, updateAuthorDto: UpdateAuthorDto): Promise<Author> {
@@ -46,12 +47,12 @@ export class AuthorsService {
       },
     );
     if (author) return author;
-    throw new NotFoundException();
+    throw new AuthorNotFoundException();
   }
 
   async remove(id: string): Promise<Author> {
     const author = await this.authorModel.findByIdAndRemove(id);
     if (author) return author;
-    throw new NotFoundException();
+    throw new AuthorNotFoundException();
   }
 }

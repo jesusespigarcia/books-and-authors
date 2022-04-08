@@ -4,12 +4,24 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthorsModule } from './authors/authors.module';
 import { BooksModule } from './books/books.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
+import { validate } from './config/config.validation';
+import { DbService } from './db-service/db.service';
 
 @Module({
   imports: [
     AuthModule,
     AuthorsModule,
-    MongooseModule.forRoot('mongodb://localhost:27017/booksAndAuthors'),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      validate,
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: DbService,
+    }),
     BooksModule,
   ],
 })

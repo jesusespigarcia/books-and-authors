@@ -8,8 +8,8 @@ import { Book, BookDocument } from './schemas/book.schema';
 import { Model, AnyKeys, AnyObject, HydratedDocument } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { NotFoundException } from '@nestjs/common';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { BookNotFoundException } from './exceptions/bookNotFoundException';
 
 describe('BooksService', () => {
   let service: BooksService;
@@ -70,7 +70,7 @@ describe('BooksService', () => {
     jest.spyOn(model, 'findById').mockResolvedValueOnce(null);
     await expect(
       service.findOne(booksDocuments.book1Document._id),
-    ).rejects.toThrow(NotFoundException);
+    ).rejects.toThrow(BookNotFoundException);
   });
 
   it('should return all books', async () => {
@@ -115,7 +115,7 @@ describe('BooksService', () => {
     jest.spyOn(model, 'findByIdAndUpdate').mockResolvedValueOnce(null);
     await expect(
       service.update(booksDocuments.book1Document._id, books.book1),
-    ).rejects.toThrow(NotFoundException);
+    ).rejects.toThrow(BookNotFoundException);
   });
 
   it('shoud delete book by id and return book', async () => {
@@ -136,6 +136,6 @@ describe('BooksService', () => {
     jest.spyOn(model, 'findByIdAndRemove').mockResolvedValueOnce(null);
     await expect(
       service.remove(booksDocuments.book1Document._id),
-    ).rejects.toThrow(NotFoundException);
+    ).rejects.toThrow(BookNotFoundException);
   });
 });
