@@ -21,7 +21,10 @@ class EnvironmentVariables {
   LOGIN_PASSWORD = 'adminPwd';
 
   @IsString()
-  DB_CONNECTION_URI = 'mongodb://localhost:27017/booksAndAuthors';
+  DB_CONNECTION_URI =
+    process.env.NODE_ENV === 'test'
+      ? 'mongodb://localhost:27017/testBooksAndAuthors'
+      : 'mongodb://localhost:27017/booksAndAuthors';
 }
 
 export function validate(config: Record<string, unknown>) {

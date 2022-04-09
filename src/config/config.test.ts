@@ -1,3 +1,3 @@
 export default {
-  'jwt.expiration': '60s',
+  'jwt.expiration': '300s',
 };
