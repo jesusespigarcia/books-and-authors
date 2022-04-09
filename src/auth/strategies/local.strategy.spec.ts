@@ -5,7 +5,7 @@ import { validate } from '../../config/config.validation';
 import configuration from '../../config/configuration';
 import { AuthModule } from '../auth.module';
 import { AuthService } from '../auth.service';
-import { UnauthorizedException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 
 describe('LocalStrategy', () => {
   let authService: AuthService;
@@ -51,13 +51,12 @@ describe('LocalStrategy', () => {
   it('should throw when user or password are incorrect', () => {
     expect.assertions(4);
     const user1 = { username: 'username 1', password: 'password1' };
-    const userReturned = null;
     const validateUserSpy = jest
       .spyOn(authService, 'validateUser')
-      .mockReturnValueOnce(userReturned);
+      .mockReturnValueOnce(null);
     expect(() =>
       localStrategy.validate(user1.username, user1.password),
-    ).toThrow(UnauthorizedException);
+    ).toThrow(BadRequestException);
     expect(validateUserSpy).toHaveBeenCalledTimes(1);
     expect(validateUserSpy.mock.calls[0][0]).toBe(user1.username);
     expect(validateUserSpy.mock.calls[0][1]).toBe(user1.password);
