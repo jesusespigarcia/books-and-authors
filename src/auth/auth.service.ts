@@ -8,7 +8,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  validateUser(username: string, password: string): any {
+  validateUser(username: string, password: string) {
     const loginUser = this.configService.get<string>('login.user');
     const loginPassword = this.configService.get<string>('login.password');
     if (username === loginUser && password === loginPassword) {
@@ -19,7 +19,7 @@ export class AuthService {
     return null;
   }
 
-  login(user: any) {
+  login(user) {
     const payload = { username: user.username };
     return {
       access_token: this.jwtService.sign(payload),

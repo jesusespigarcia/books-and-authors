@@ -1,14 +1,9 @@
-import {
-  books,
-  booksDocuments,
-  booksDocumentsArray,
-} from './../../test/data/books.data';
+import { books, booksDocuments } from './../../test/data/books.data';
 import { BooksService } from './books.service';
 import { Book, BookDocument } from './schemas/book.schema';
 import { Model, AnyKeys, AnyObject, HydratedDocument } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { UpdateBookDto } from './dto/update-book.dto';
 import { BookNotFoundException } from './exceptions/bookNotFoundException';
 
 describe('BooksService', () => {
@@ -47,41 +42,41 @@ describe('BooksService', () => {
       model,
       'create',
     ) as unknown as jest.MockedFunction<CreateOp<BookDocument>>;
-    createSpy.mockResolvedValueOnce(booksDocuments.book1Document as any);
-    const bookCreated = await service.create(books.book1 as any);
+    createSpy.mockResolvedValueOnce(booksDocuments[0] as any);
+    const bookCreated = await service.create(books[0]);
     expect(createSpy).toHaveBeenCalledTimes(1);
-    expect(createSpy.mock.calls[0][0]).toEqual(books.book1);
-    expect(bookCreated).toEqual(booksDocuments.book1Document);
+    expect(createSpy.mock.calls[0][0]).toEqual(books[0]);
+    expect(bookCreated).toEqual(booksDocuments[0]);
   });
 
   it('shoud return one book by id', async () => {
     expect.assertions(3);
     const findByIdSpy = jest
       .spyOn(model, 'findById')
-      .mockResolvedValueOnce(booksDocuments.book1Document);
-    const bookFound = await service.findOne(booksDocuments.book1Document._id);
+      .mockResolvedValueOnce(booksDocuments[0]);
+    const bookFound = await service.findOne(booksDocuments[0]._id);
     expect(findByIdSpy).toHaveBeenCalledTimes(1);
-    expect(findByIdSpy.mock.calls[0][0]).toBe(booksDocuments.book1Document._id);
-    expect(bookFound).toEqual(booksDocuments.book1Document);
+    expect(findByIdSpy.mock.calls[0][0]).toBe(booksDocuments[0]._id);
+    expect(bookFound).toEqual(booksDocuments[0]);
   });
 
   it('shoud throw if one book by id dont exists', async () => {
     expect.assertions(1);
     jest.spyOn(model, 'findById').mockResolvedValueOnce(null);
-    await expect(
-      service.findOne(booksDocuments.book1Document._id),
-    ).rejects.toThrow(BookNotFoundException);
+    await expect(service.findOne(booksDocuments[0]._id)).rejects.toThrow(
+      BookNotFoundException,
+    );
   });
 
   it('should return all books', async () => {
     expect.assertions(3);
     const findSpy = jest
       .spyOn(model, 'find')
-      .mockResolvedValueOnce(booksDocumentsArray);
+      .mockResolvedValueOnce(booksDocuments);
     const booksFound = await service.findAll();
     expect(findSpy).toHaveBeenCalledTimes(1);
     expect(findSpy.mock.calls[0]).toEqual([]);
-    expect(booksFound).toEqual(booksDocumentsArray);
+    expect(booksFound).toEqual(booksDocuments);
   });
 
   it('shoud update book by id and return updated book', async () => {
@@ -92,20 +87,18 @@ describe('BooksService', () => {
     const findByIdAndUpdateSpy = jest
       .spyOn(model, 'findByIdAndUpdate')
       .mockResolvedValueOnce({
-        ...booksDocuments.book1Document,
+        ...booksDocuments[0],
         ...updateBookDto,
       });
     const bookUpdated = await service.update(
-      booksDocuments.book1Document._id,
+      booksDocuments[0]._id,
       updateBookDto,
     );
     expect(findByIdAndUpdateSpy).toHaveBeenCalledTimes(1);
-    expect(findByIdAndUpdateSpy.mock.calls[0][0]).toBe(
-      booksDocuments.book1Document._id,
-    );
+    expect(findByIdAndUpdateSpy.mock.calls[0][0]).toBe(booksDocuments[0]._id);
     expect(findByIdAndUpdateSpy.mock.calls[0][1]).toEqual(updateBookDto);
     expect(bookUpdated).toEqual({
-      ...booksDocuments.book1Document,
+      ...booksDocuments[0],
       ...updateBookDto,
     });
   });
@@ -114,7 +107,7 @@ describe('BooksService', () => {
     expect.assertions(1);
     jest.spyOn(model, 'findByIdAndUpdate').mockResolvedValueOnce(null);
     await expect(
-      service.update(booksDocuments.book1Document._id, books.book1),
+      service.update(booksDocuments[0]._id, books[0]),
     ).rejects.toThrow(BookNotFoundException);
   });
 
@@ -122,20 +115,18 @@ describe('BooksService', () => {
     expect.assertions(3);
     const findByIdAndRemoveSpy = jest
       .spyOn(model, 'findByIdAndRemove')
-      .mockResolvedValueOnce(booksDocuments.book1Document);
-    const bookDeleted = await service.remove(booksDocuments.book1Document._id);
+      .mockResolvedValueOnce(booksDocuments[0]);
+    const bookDeleted = await service.remove(booksDocuments[0]._id);
     expect(findByIdAndRemoveSpy).toHaveBeenCalledTimes(1);
-    expect(findByIdAndRemoveSpy.mock.calls[0][0]).toBe(
-      booksDocuments.book1Document._id,
-    );
-    expect(bookDeleted).toEqual(booksDocuments.book1Document);
+    expect(findByIdAndRemoveSpy.mock.calls[0][0]).toBe(booksDocuments[0]._id);
+    expect(bookDeleted).toEqual(booksDocuments[0]);
   });
 
   it('shoud throw if the book to delete by id dont exists', async () => {
     expect.assertions(1);
     jest.spyOn(model, 'findByIdAndRemove').mockResolvedValueOnce(null);
-    await expect(
-      service.remove(booksDocuments.book1Document._id),
-    ).rejects.toThrow(BookNotFoundException);
+    await expect(service.remove(booksDocuments[0]._id)).rejects.toThrow(
+      BookNotFoundException,
+    );
   });
 });

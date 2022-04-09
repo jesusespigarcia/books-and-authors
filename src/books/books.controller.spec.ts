@@ -4,12 +4,7 @@ import { BooksService } from './books.service';
 import { Book } from './schemas/book.schema';
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
-import { UpdateBookDto } from './dto/update-book.dto';
-import {
-  books,
-  booksDocuments,
-  booksDocumentsArray,
-} from './../../test/data/books.data';
+import { books, booksDocuments } from './../../test/data/books.data';
 
 describe('BooksController', () => {
   let controller: BooksController;
@@ -42,35 +37,33 @@ describe('BooksController', () => {
     expect.assertions(3);
     const createSpy = jest
       .spyOn(service, 'create')
-      .mockResolvedValueOnce(booksDocuments.book1Document);
-    const bookCreated = await controller.create(books.book1 as any);
+      .mockResolvedValueOnce(booksDocuments[0]);
+    const bookCreated = await controller.create(books[0]);
     expect(createSpy).toHaveBeenCalledTimes(1);
-    expect(createSpy.mock.calls[0][0]).toEqual(books.book1);
-    expect(bookCreated).toEqual(booksDocuments.book1Document);
+    expect(createSpy.mock.calls[0][0]).toEqual(books[0]);
+    expect(bookCreated).toEqual(booksDocuments[0]);
   });
 
   it('should return one book by id', async () => {
     expect.assertions(3);
     const findOneSpy = jest
       .spyOn(service, 'findOne')
-      .mockResolvedValueOnce(booksDocuments.book1Document);
-    const bookFound = await controller.findOne(
-      booksDocuments.book1Document._id,
-    );
+      .mockResolvedValueOnce(booksDocuments[0]);
+    const bookFound = await controller.findOne(booksDocuments[0]._id);
     expect(findOneSpy).toHaveBeenCalledTimes(1);
-    expect(findOneSpy.mock.calls[0][0]).toBe(booksDocuments.book1Document._id);
-    expect(bookFound).toEqual(booksDocuments.book1Document);
+    expect(findOneSpy.mock.calls[0][0]).toBe(booksDocuments[0]._id);
+    expect(bookFound).toEqual(booksDocuments[0]);
   });
 
   it('should return all authors', async () => {
     expect.assertions(3);
     const findAllSpy = jest
       .spyOn(service, 'findAll')
-      .mockResolvedValueOnce(booksDocumentsArray);
+      .mockResolvedValueOnce(booksDocuments);
     const booksFound = await controller.findAll();
     expect(findAllSpy).toHaveBeenCalledTimes(1);
     expect(findAllSpy.mock.calls[0]).toEqual([]);
-    expect(booksFound).toEqual(booksDocumentsArray);
+    expect(booksFound).toEqual(booksDocuments);
   });
 
   it('shoud update book by id and return updated book', async () => {
@@ -79,18 +72,18 @@ describe('BooksController', () => {
       description: 'Book 1 new description',
     };
     const updateSpy = jest.spyOn(service, 'update').mockResolvedValueOnce({
-      ...booksDocuments.book1Document,
+      ...booksDocuments[0],
       ...updateBookDto,
-    } as any);
+    });
     const bookUpdated = await controller.update(
-      booksDocuments.book1Document._id,
+      booksDocuments[0]._id,
       updateBookDto,
     );
     expect(updateSpy).toHaveBeenCalledTimes(1);
-    expect(updateSpy.mock.calls[0][0]).toBe(booksDocuments.book1Document._id);
+    expect(updateSpy.mock.calls[0][0]).toBe(booksDocuments[0]._id);
     expect(updateSpy.mock.calls[0][1]).toEqual(updateBookDto);
     expect(bookUpdated).toEqual({
-      ...booksDocuments.book1Document,
+      ...booksDocuments[0],
       ...updateBookDto,
     });
   });
@@ -99,12 +92,10 @@ describe('BooksController', () => {
     expect.assertions(3);
     const removeSpy = jest
       .spyOn(service, 'remove')
-      .mockResolvedValueOnce(booksDocuments.book1Document);
-    const bookDeleted = await controller.remove(
-      booksDocuments.book1Document._id,
-    );
+      .mockResolvedValueOnce(booksDocuments[0]);
+    const bookDeleted = await controller.remove(booksDocuments[0]._id);
     expect(removeSpy).toHaveBeenCalledTimes(1);
-    expect(removeSpy.mock.calls[0][0]).toBe(booksDocuments.book1Document._id);
-    expect(bookDeleted).toEqual(booksDocuments.book1Document);
+    expect(removeSpy.mock.calls[0][0]).toBe(booksDocuments[0]._id);
+    expect(bookDeleted).toEqual(booksDocuments[0]);
   });
 });

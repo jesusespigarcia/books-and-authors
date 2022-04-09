@@ -4,8 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { Author } from 'src/authors/schemas/author.schema';
-import { UpdateAuthorDto } from 'src/authors/dto/update-author.dto';
+import { Author } from '../src/authors/schemas/author.schema';
 
 const author1: Author = {
   name: 'Author1',

@@ -14,7 +14,7 @@ export class Author {
   @Prop({
     select: false,
   })
-  __v: number;
+  __v?: number;
 }
 
 export const AuthorSchema = SchemaFactory.createForClass(Author);

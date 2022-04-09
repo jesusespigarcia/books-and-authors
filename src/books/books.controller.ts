@@ -10,6 +10,7 @@ import {
   StreamableFile,
   Response,
   UseGuards,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BooksService } from './books.service';
@@ -17,6 +18,7 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from './schemas/book.schema';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { MongooseErrorFilter } from '../filters/validation-exceptions.filter';
 
 @ApiTags('books')
 @Controller('books')
@@ -25,6 +27,7 @@ export class BooksController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @UseFilters(MongooseErrorFilter)
   @Post()
   async create(@Body() createBookDto: CreateBookDto): Promise<Book> {
     return await this.booksService.create(createBookDto);
@@ -44,6 +47,7 @@ export class BooksController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @UseFilters(MongooseErrorFilter)
   @Patch(':id')
   async update(
     @Param('id', new ValidationObjectIdPipe()) id: string,

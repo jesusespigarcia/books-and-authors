@@ -1,8 +1,4 @@
-import {
-  authors,
-  authorsDocuments,
-  authorsDocumentsArray,
-} from '../../test/data/authors.data';
+import { authors, authorsDocuments } from '../../test/data/authors.data';
 import { AuthorsService } from './authors.service';
 import { Author, AuthorDocument } from './schemas/author.schema';
 import { Model, AnyKeys, AnyObject, HydratedDocument } from 'mongoose';
@@ -47,45 +43,41 @@ describe('AuthorsService', () => {
       model,
       'create',
     ) as unknown as jest.MockedFunction<CreateOp<AuthorDocument>>;
-    createSpy.mockResolvedValueOnce(authorsDocuments.author1Document as any);
-    const authorCreated = await service.create(authors.author1);
+    createSpy.mockResolvedValueOnce(authorsDocuments[0] as any);
+    const authorCreated = await service.create(authors[0]);
     expect(createSpy).toHaveBeenCalledTimes(1);
-    expect(createSpy.mock.calls[0][0]).toEqual(authors.author1);
-    expect(authorCreated).toEqual(authorsDocuments.author1Document);
+    expect(createSpy.mock.calls[0][0]).toEqual(authors[0]);
+    expect(authorCreated).toEqual(authorsDocuments[0]);
   });
 
   it('shoud return one author by id', async () => {
     expect.assertions(3);
     const findByIdSpy = jest
       .spyOn(model, 'findById')
-      .mockResolvedValueOnce(authorsDocuments.author1Document);
-    const authorFound = await service.findOne(
-      authorsDocuments.author1Document._id,
-    );
+      .mockResolvedValueOnce(authorsDocuments[0]);
+    const authorFound = await service.findOne(authorsDocuments[0]._id);
     expect(findByIdSpy).toHaveBeenCalledTimes(1);
-    expect(findByIdSpy.mock.calls[0][0]).toBe(
-      authorsDocuments.author1Document._id,
-    );
-    expect(authorFound).toEqual(authorsDocuments.author1Document);
+    expect(findByIdSpy.mock.calls[0][0]).toBe(authorsDocuments[0]._id);
+    expect(authorFound).toEqual(authorsDocuments[0]);
   });
 
   it('shoud throw if one author by id dont exists', async () => {
     expect.assertions(1);
     jest.spyOn(model, 'findById').mockResolvedValueOnce(null);
-    await expect(
-      service.findOne(authorsDocuments.author1Document._id),
-    ).rejects.toThrow(AuthorNotFoundException);
+    await expect(service.findOne(authorsDocuments[0]._id)).rejects.toThrow(
+      AuthorNotFoundException,
+    );
   });
 
   it('should return all authors', async () => {
     expect.assertions(3);
     const findSpy = jest
       .spyOn(model, 'find')
-      .mockResolvedValueOnce(authorsDocumentsArray);
+      .mockResolvedValueOnce(authorsDocuments);
     const authorsFound = await service.findAll();
     expect(findSpy).toHaveBeenCalledTimes(1);
     expect(findSpy.mock.calls[0]).toEqual([]);
-    expect(authorsFound).toEqual(authorsDocumentsArray);
+    expect(authorsFound).toEqual(authorsDocuments);
   });
 
   it('shoud update author by id and return updated author', async () => {
@@ -94,20 +86,18 @@ describe('AuthorsService', () => {
     const findByIdAndUpdateSpy = jest
       .spyOn(model, 'findByIdAndUpdate')
       .mockResolvedValueOnce({
-        ...authorsDocuments.author1Document,
+        ...authorsDocuments[0],
         ...updateAuthorDto,
       });
     const authorUpdated = await service.update(
-      authorsDocuments.author1Document._id,
+      authorsDocuments[0]._id,
       updateAuthorDto,
     );
     expect(findByIdAndUpdateSpy).toHaveBeenCalledTimes(1);
-    expect(findByIdAndUpdateSpy.mock.calls[0][0]).toBe(
-      authorsDocuments.author1Document._id,
-    );
+    expect(findByIdAndUpdateSpy.mock.calls[0][0]).toBe(authorsDocuments[0]._id);
     expect(findByIdAndUpdateSpy.mock.calls[0][1]).toEqual(updateAuthorDto);
     expect(authorUpdated).toEqual({
-      ...authorsDocuments.author1Document,
+      ...authorsDocuments[0],
       ...updateAuthorDto,
     });
   });
@@ -116,7 +106,7 @@ describe('AuthorsService', () => {
     expect.assertions(1);
     jest.spyOn(model, 'findByIdAndUpdate').mockResolvedValueOnce(null);
     await expect(
-      service.update(authorsDocuments.author1Document._id, authors.author1),
+      service.update(authorsDocuments[0]._id, authors[0]),
     ).rejects.toThrow(AuthorNotFoundException);
   });
 
@@ -124,22 +114,18 @@ describe('AuthorsService', () => {
     expect.assertions(3);
     const findByIdAndRemoveSpy = jest
       .spyOn(model, 'findByIdAndRemove')
-      .mockResolvedValueOnce(authorsDocuments.author1Document);
-    const authorDeleted = await service.remove(
-      authorsDocuments.author1Document._id,
-    );
+      .mockResolvedValueOnce(authorsDocuments[0]);
+    const authorDeleted = await service.remove(authorsDocuments[0]._id);
     expect(findByIdAndRemoveSpy).toHaveBeenCalledTimes(1);
-    expect(findByIdAndRemoveSpy.mock.calls[0][0]).toBe(
-      authorsDocuments.author1Document._id,
-    );
-    expect(authorDeleted).toEqual(authorsDocuments.author1Document);
+    expect(findByIdAndRemoveSpy.mock.calls[0][0]).toBe(authorsDocuments[0]._id);
+    expect(authorDeleted).toEqual(authorsDocuments[0]);
   });
 
   it('shoud throw if the author to delete by id dont exists', async () => {
     expect.assertions(1);
     jest.spyOn(model, 'findByIdAndRemove').mockResolvedValueOnce(null);
-    await expect(
-      service.remove(authorsDocuments.author1Document._id),
-    ).rejects.toThrow(AuthorNotFoundException);
+    await expect(service.remove(authorsDocuments[0]._id)).rejects.toThrow(
+      AuthorNotFoundException,
+    );
   });
 });

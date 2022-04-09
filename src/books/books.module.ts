@@ -6,7 +6,19 @@ import { Book, BookSchema } from './schemas/book.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Book.name, schema: BookSchema }]),
+    MongooseModule.forFeatureAsync([
+      {
+        name: Book.name,
+        useFactory: () => {
+          const schema = BookSchema;
+          schema.pre(/^find|save/, function (next) {
+            this.populate('author');
+            next();
+          });
+          return schema;
+        },
+      },
+    ]),
   ],
   controllers: [BooksController],
   providers: [BooksService],
