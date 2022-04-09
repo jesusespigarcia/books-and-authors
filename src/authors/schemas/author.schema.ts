@@ -10,6 +10,11 @@ export class Author {
 
   @Prop()
   age: number;
+
+  @Prop({
+    select: false,
+  })
+  __v: number;
 }
 
 export const AuthorSchema = SchemaFactory.createForClass(Author);
