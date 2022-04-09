@@ -4,9 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: ['debug'],
-  });
+  const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(
@@ -20,7 +18,12 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document, {});
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+    customSiteTitle: 'Books and Authors API docs',
+  });
 
   await app.listen(3000);
 }

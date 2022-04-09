@@ -57,7 +57,7 @@ describe('AuthService', () => {
   it('should validate when user and password are correct', () => {
     expect.assertions(3);
     const tokenReturned = {
-      access_token:
+      accessToken:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjQ5NDM2NTMzLCJleHAiOjE2NDk0MzY1OTN9.YUJEfDiY9w97Txf0Z7H88Fl6SLo0vVpq3o6-7t7w43w',
     };
     const user = {
@@ -68,7 +68,7 @@ describe('AuthService', () => {
     };
     const signSpy = jest
       .spyOn(jwtService, 'sign')
-      .mockReturnValueOnce(tokenReturned.access_token);
+      .mockReturnValueOnce(tokenReturned.accessToken);
     const accessToken = service.login(user);
     expect(signSpy).toHaveBeenCalledTimes(1);
     expect(signSpy.mock.calls[0][0]).toEqual(signPayload);

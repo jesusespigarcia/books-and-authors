@@ -11,7 +11,15 @@ import {
   Response,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
@@ -24,17 +32,41 @@ export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) {}
 
   @ApiBearerAuth()
+  @ApiCreatedResponse({
+    description: 'Autor creado',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Credenciales incorrectas',
+  })
+  @ApiOperation({
+    summary: 'creación de un autor',
+  })
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createAuthorDto: CreateAuthorDto): Promise<Author> {
     return await this.authorsService.create(createAuthorDto);
   }
 
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiOperation({
+    summary: 'consulta de los autores',
+  })
   @Get()
   async findAll(): Promise<Author[]> {
     return await this.authorsService.findAll();
   }
 
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiNotFoundResponse({
+    description: 'Autor no encontrado',
+  })
+  @ApiOperation({
+    summary: 'consulta de un autor',
+  })
   @Get(':id')
   async findOne(
     @Param('id', new ValidationObjectIdPipe()) id: string,
@@ -43,6 +75,18 @@ export class AuthorsController {
   }
 
   @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiNotFoundResponse({
+    description: 'Autor no encontrado',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Credenciales incorrectas',
+  })
+  @ApiOperation({
+    summary: 'actualización de un autor',
+  })
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
@@ -53,6 +97,18 @@ export class AuthorsController {
   }
 
   @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiNotFoundResponse({
+    description: 'Autor no encontrado',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Credenciales incorrectas',
+  })
+  @ApiOperation({
+    summary: 'borrado de un autor',
+  })
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(
@@ -61,6 +117,12 @@ export class AuthorsController {
     return await this.authorsService.remove(id);
   }
 
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiOperation({
+    summary: 'listado de autores en formato csv',
+  })
   @Get('files/csv')
   getCsv(@Response({ passthrough: true }) res): StreamableFile {
     res.set({

@@ -12,7 +12,15 @@ import {
   UseGuards,
   UseFilters,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -26,6 +34,15 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @ApiBearerAuth()
+  @ApiCreatedResponse({
+    description: 'Libro creado',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Credenciales incorrectas',
+  })
+  @ApiOperation({
+    summary: 'creación de un libro',
+  })
   @UseGuards(JwtAuthGuard)
   @UseFilters(MongooseErrorFilter)
   @Post()
@@ -33,11 +50,26 @@ export class BooksController {
     return await this.booksService.create(createBookDto);
   }
 
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiOperation({
+    summary: 'consulta de los libros',
+  })
   @Get()
   async findAll(): Promise<Book[]> {
     return await this.booksService.findAll();
   }
 
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiNotFoundResponse({
+    description: 'Libro no encontrado',
+  })
+  @ApiOperation({
+    summary: 'consulta de un libro',
+  })
   @Get(':id')
   async findOne(
     @Param('id', new ValidationObjectIdPipe()) id: string,
@@ -46,6 +78,18 @@ export class BooksController {
   }
 
   @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiNotFoundResponse({
+    description: 'Libro no encontrado',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Credenciales incorrectas',
+  })
+  @ApiOperation({
+    summary: 'actualización de un libro',
+  })
   @UseGuards(JwtAuthGuard)
   @UseFilters(MongooseErrorFilter)
   @Patch(':id')
@@ -57,6 +101,18 @@ export class BooksController {
   }
 
   @ApiBearerAuth()
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiNotFoundResponse({
+    description: 'Libro no encontrado',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Credenciales incorrectas',
+  })
+  @ApiOperation({
+    summary: 'borrado de un libro',
+  })
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(
@@ -65,6 +121,12 @@ export class BooksController {
     return await this.booksService.remove(id);
   }
 
+  @ApiOkResponse({
+    description: 'Operación correcta',
+  })
+  @ApiOperation({
+    summary: 'listado de libros en formato csv',
+  })
   @Get('files/csv')
   getCsv(@Response({ passthrough: true }) res): StreamableFile {
     res.set({

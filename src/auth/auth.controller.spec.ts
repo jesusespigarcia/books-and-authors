@@ -46,7 +46,7 @@ describe('AuthController', () => {
       },
     };
     const tokenReturned = {
-      access_token:
+      accessToken:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjQ5NDM2NTMzLCJleHAiOjE2NDk0MzY1OTN9.YUJEfDiY9w97Txf0Z7H88Fl6SLo0vVpq3o6-7t7w43w',
     };
     const loginSpy = jest

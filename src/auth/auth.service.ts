@@ -1,3 +1,4 @@
+import { LoginResponseDto } from './dto/login-response.dto';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -6,7 +7,7 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   validateUser(username: string, password: string) {
     const loginUser = this.configService.get<string>('login.user');
@@ -19,10 +20,10 @@ export class AuthService {
     return null;
   }
 
-  login(user) {
+  login(user): LoginResponseDto {
     const payload = { username: user.username };
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload)
     };
   }
 }
