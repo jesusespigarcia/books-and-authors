@@ -1,4 +1,4 @@
-import { ValidationObjectIdPipe } from '../transformers/validationObjectIdPipe';
+import { ValidationObjectIdPipe } from '../transformers/validationObjectId.pipe';
 import {
   Controller,
   Get,

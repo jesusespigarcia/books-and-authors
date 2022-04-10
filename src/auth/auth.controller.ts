@@ -23,14 +23,14 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)
   @ApiBadRequestResponse({
     description: 'Credenciales incorrectas',
   })
   @ApiOkResponse({
-    description: 'Login correcto'
+    description: 'Login correcto',
   })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

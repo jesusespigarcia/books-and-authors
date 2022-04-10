@@ -23,13 +23,8 @@ export class AuthorsService {
   }
 
   findAllStream(): JSON2CSVTransform<string> {
-    const csvTransformer = new Transform();
-    return this.authorModel
-      .find()
-      .lean()
-      .cursor()
-      .map((author) => JSON.stringify(author))
-      .pipe(csvTransformer);
+    const csvTransformer = new Transform({}, { objectMode: true });
+    return this.authorModel.find().lean().cursor().pipe(csvTransformer);
   }
 
   async findOne(id: string): Promise<Author> {

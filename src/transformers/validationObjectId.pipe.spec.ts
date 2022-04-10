@@ -1,4 +1,4 @@
-import { ValidationObjectIdPipe } from './validationObjectIdPipe';
+import { ValidationObjectIdPipe } from './validationObjectId.pipe';
 
 describe('ValidationObjectIdPipe', () => {
   let validationObjectIdPipe: ValidationObjectIdPipe;

@@ -21,15 +21,13 @@ export class BooksService {
   }
 
   findAllStream(): JSON2CSVTransform<string> {
-    const csvTransformer = new Transform({
-      fields: ['_id', 'title', 'description', 'author.name'],
-    });
-    return this.bookModel
-      .find()
-      .lean()
-      .cursor()
-      .map((book) => JSON.stringify(book))
-      .pipe(csvTransformer);
+    const csvTransformer = new Transform(
+      {
+        fields: ['_id', 'title', 'description', 'author.name'],
+      },
+      { objectMode: true },
+    );
+    return this.bookModel.find().lean().cursor().pipe(csvTransformer);
   }
 
   async findOne(id: string): Promise<Book> {

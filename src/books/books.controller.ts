@@ -1,4 +1,5 @@
-import { ValidationObjectIdPipe } from '../transformers/validationObjectIdPipe';
+import { ValidationBookDtoPipe } from './../transformers/validationBookDto.pipe';
+import { ValidationObjectIdPipe } from '../transformers/validationObjectId.pipe';
 import {
   Controller,
   Get,
@@ -46,7 +47,9 @@ export class BooksController {
   @UseGuards(JwtAuthGuard)
   @UseFilters(MongooseErrorFilter)
   @Post()
-  async create(@Body() createBookDto: CreateBookDto): Promise<Book> {
+  async create(
+    @Body(new ValidationBookDtoPipe()) createBookDto: CreateBookDto,
+  ): Promise<Book> {
     return await this.booksService.create(createBookDto);
   }
 
@@ -95,7 +98,7 @@ export class BooksController {
   @Patch(':id')
   async update(
     @Param('id', new ValidationObjectIdPipe()) id: string,
-    @Body() updateBookDto: UpdateBookDto,
+    @Body(new ValidationBookDtoPipe()) updateBookDto: UpdateBookDto,
   ): Promise<Book> {
     return await this.booksService.update(id, updateBookDto);
   }
