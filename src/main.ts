@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, LogLevel } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -27,6 +27,7 @@ async function bootstrap() {
   });
 
   const configService: ConfigService = app.get<ConfigService>(ConfigService);
+  app.useLogger(configService.get<LogLevel[]>('log.levels'));
   await app.listen(configService.get<number>('server.port'));
 }
 bootstrap();
