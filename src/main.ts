@@ -15,7 +15,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Books and Authors API')
     .setDescription('API para gestionar autores y libros')
-    .setVersion('1.0')
+    .setVersion('1.0.0')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
