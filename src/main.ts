@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -25,6 +26,7 @@ async function bootstrap() {
     customSiteTitle: 'Books and Authors API docs',
   });
 
-  await app.listen(3000);
+  const configService: ConfigService = app.get<ConfigService>(ConfigService);
+  await app.listen(configService.get<number>('server.port'));
 }
 bootstrap();
